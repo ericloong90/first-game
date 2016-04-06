@@ -12,6 +12,7 @@ var mainState = {
 		game.load.image('wallV', 'assets/wallVertical.png');
 		game.load.image('wallH', 'assets/wallHorizontal.png');
 		game.load.image('coin', 'assets/coin.png');
+		game.load.image('enemy', 'assets/enemy.png');
 	},
 
 	create: function () {
@@ -129,12 +130,8 @@ var mainState = {
 	},
 
 	takeCoin: function (player, coin) {
-		// Define 2 random variables
-		var newX = game.rnd.integerInRange(10, game.world.width - 20);
-		var newY = game.rnd.integerInRange(10, game.world.height - 20);
-
-		// Set the new coin position
-		this.coin.reset(newX, newY);
+		// Change the coin position
+		this.updateCoinPosition();
 
 		// Increase the score by 5
 		this.score += 5;
@@ -148,6 +145,20 @@ var mainState = {
 		var coinPosition = [{x: 140, y: 60}, {x: 360, y: 60},	// Top row
 												{x: 60, y: 140}, {x: 440, y: 140},	// 2nd row
 												{x: 130, y: 300}, {x: 370, y: 300}];	// 3rd row
+
+		// Remove the current coin position from the array
+		// Otherwise the coin could appear at the same spot twice in a row
+		for (var i = 0; i < coinPosition.length; i++) {
+			if (coinPosition[i].x === this.coin.x) {
+				coinPosition.splice(i, 1); // Go to position i, and remove one item
+			}
+		}
+
+		// Randomly select a position from the array
+		var newPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
+
+		// Set the new position of the coin
+		this.coin.reset(newPosition.x, newPosition.y);
 	}
 };
 
